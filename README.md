@@ -25,5 +25,5 @@ slide_model(tif_path)
 
 ## TODO
 
-- [x] 语义分割（保存格式：tif）
+- [x] 语义分割（保存格式：geotiff）
 - [ ] 矩形框识别（保存格式：geojson）
