@@ -14,7 +14,7 @@ model.set_dict(paddle.load(params_path))
 slide_model = SegSlider(model)
 # # 可选，设置一些参数
 # slide_model.ready(
-# 	 block_size: 512,
+#    block_size: 512,
 #    overlap: 32,
 #    mean: [0.5, 0.5, 0.5], 
 #    std: [0.5, 0.5, 0.5]
