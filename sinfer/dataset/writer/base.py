@@ -4,7 +4,6 @@ from typing import Dict
 
 class BaseWriter(object):
     def __init__(self, config: Dict, ext: str="tif") -> None:
-        super(BaseWriter, self).__init__()
         file_split = osp.split(config["file_path"])
         self.save_path = osp.join(file_split[0], osp.splitext(file_split[-1])[0] + "_output." + ext)
         self.width = config["width"]

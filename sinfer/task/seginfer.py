@@ -15,10 +15,7 @@ class SegSlider(object):
         """
         self.model = model
         self.model.eval()
-        self.block_size = 512
-        self.overlap = 32
-        self.mean = [0.5, 0.5, 0.5]
-        self.std = [0.5, 0.5, 0.5]
+        self.ready()
         
     def __call__(self, path) -> None:
         dataloader = RasterLoader(path, self.block_size, self.overlap, self.mean, self.std)

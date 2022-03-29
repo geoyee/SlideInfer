@@ -26,7 +26,6 @@ class RasterLoader(object):
         Raises:
             ValueError: Can't read iamge from this path. 
         """
-        super(RasterLoader, self).__init__()
         self._src_data = gdal.Open(path)
         if self._src_data is None:
             raise ValueError("Can't read iamge from file {0}.".format(path))
