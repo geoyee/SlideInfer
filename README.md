@@ -5,9 +5,9 @@
 |          语义分割          |          目标检测          |
 | :------------------------: | :------------------------: |
 | ![seg](docs/image/seg.jpg) | ![det](docs/image/det.jpg) |
-|    图像大小：4983*3745     |    图像大小：3735*2546     |
+|   4983*3745  EPSG:32737    |    3735*2546  EPSG:4326    |
 
-*\*注：目前仅支持Uint8的三通道影像（来自各类地图下载器的影像），坐标系统最好为EPSG:4326。*
+*\*注：目前仅支持Uint8的三通道影像（来自各类地图下载器的影像），目标检测图像坐标系统最好为EPSG:4326。*
 
 
 
@@ -42,7 +42,7 @@ slide_model(tif_path)
 
 ### PaddleDetection
 
-可以通过pip安装paddledet，PaddleDetectiond的模型直接使用不太方便，建议使用config进行加载，使用的什么config训练就可以仅加载该config对应的网络。以YOLOv3\_MobileNetv3\_large为例，训练完成后可以按如下方式进行推理。结果将保存到与`tif_path`相同的路径，以`_output.json`结束。保存结果可以在[这里](http://geojson.io/)进行查看（仅支持EPSG:4326），也可在各类GIS软件中进行查看。
+可以通过pip安装paddledet，PaddleDetectiond的模型直接使用不太方便，建议使用config进行加载，使用的什么config训练就可以仅加载该config对应的网络。以YOLOv3\_MobileNetv3\_large为例，训练完成后可以按如下方式进行推理。结果将保存到与`tif_path`相同的路径，以`_output.json`结束。保存结果可以在[这里](http://geojson.io/)进行查看（在线显示的坐标系统仅支持EPSG:4326），也可在各类GIS软件中进行查看。
 
 ```python
 import paddle
