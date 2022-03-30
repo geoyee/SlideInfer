@@ -1,4 +1,5 @@
 import codecs
+import itertools
 import geojson
 from geojson import Polygon, Feature, FeatureCollection
 from typing import List, Dict
@@ -8,10 +9,9 @@ from .base import BaseWriter
 class DetWriter(BaseWriter):
     def __init__(self, config: Dict) -> None:
         super(DetWriter, self).__init__(config, "json")
-        self.feats = []
         self.rects = []
         self.draw_threshold = 0.5
-        self.iou_threshold = 0.8
+        self.iou_threshold = 0.25
         self.dst_ds = codecs.open(self.save_path, "w", encoding="utf-8")
 
     def __gtConvert(self, x, y):
@@ -32,8 +32,20 @@ class DetWriter(BaseWriter):
         return iou
 
     def __delReBox(self):
-        pass
-        # TODO: remove same
+        dels = []
+        temp = []
+        for boxs in itertools.combinations(self.rects, 2):
+            if self.__calcIOU(boxs[0][2:], boxs[1][2:]) > self.iou_threshold and \
+               boxs[0][0] == boxs[1][0]:
+                if boxs[0][1] > boxs[1][1]:
+                    dels.append(boxs[1])
+                else:
+                    dels.append(boxs[0])
+        dels = list(set(dels))
+        for rect in self.rects:
+            if rect not in dels:
+                temp.append(rect)
+        self.rects = temp
 
     def write(self, bboxs: Dict, start: List[int]) -> None:
         w, h = start
@@ -43,16 +55,23 @@ class DetWriter(BaseWriter):
             y1 += h
             x2 += w
             y2 += h
+            if score >= self.draw_threshold:
+                self.rects.append((clas, score, x1, y1, x2, y2))   
+
+    def __geoCoordinate(self) -> None:
+        feats = []
+        for rect in self.rects:
+            clas, score, x1, y1, x2, y2 = rect
             xg1, yg1 = self.__gtConvert(x1, y1)
             xg2, yg2 = self.__gtConvert(x2, y2)
-            if score >= self.draw_threshold:
-                poly = Polygon([[(xg1, yg1), (xg1, yg2), (xg2, yg2), (xg2, yg1), (xg1, yg1)]])
-                feat = Feature(geometry=poly, properties={"class": int(clas), "score": score})
-                self.rects.append((x1, y1, x2, y2))
-                self.feats.append(feat)
+            poly = Polygon([[(xg1, yg1), (xg1, yg2), (xg2, yg2), (xg2, yg1), (xg1, yg1)]])
+            feat = Feature(geometry=poly, properties={"class": int(clas), "score": score})
+            feats.append(feat)
+        return feats
 
     def close(self) -> None:
         self.__delReBox()
-        gjs = FeatureCollection(self.feats)
+        feats = self.__geoCoordinate()
+        gjs = FeatureCollection(feats)
         self.dst_ds.write(geojson.dumps(gjs))
         self.dst_ds.close()
