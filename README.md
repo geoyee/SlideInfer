@@ -74,7 +74,7 @@ slide_model(tif_path)
 
 
 
-## PaddleClas
+### PaddleClas
 
 可以通过pip安装paddleclas，以GhostNet_x1_3为例，训练完成后可以按如下方式进行推理。结果将保存到与`tif_path`相同的路径，以`_output.tif`结束。保存结果可以在各类GIS软件中进行查看。
 
