@@ -3,21 +3,20 @@ import paddle
 from paddle.nn import Layer
 from tqdm import tqdm
 from typing import List, Union
+from .baseinfer import BaseSlider
 from ..dataset import RasterLoader, SegWriter
 
 
-class SegSlider(object):
+class SegSlider(BaseSlider):
     def __init__(self, model: Layer) -> None:
         """ Slide infer about segmentation.
 
         Args:
             model (Layer): Model of PaddleSeg.
         """
-        self.model = model
-        self.model.eval()
-        self.ready()
+        super(SegSlider, self).__init__(model)
         
-    def __call__(self, path) -> None:
+    def __call__(self, path: str) -> None:
         dataloader = RasterLoader(path, self.block_size, self.overlap, self.mean, self.std)
         datawriter = SegWriter(dataloader.config)
         for data in tqdm(dataloader):
@@ -43,7 +42,5 @@ class SegSlider(object):
             mean (Union[List[float], None], optional): Mean of normalize. Defaults to [0.5, 0.5, 0.5].
             std (Union[List[float], None], optional): Std of normalize. Defaults to [0.5, 0.5, 0.5].
         """
-        self.block_size = block_size
+        super(SegSlider, self).ready(block_size, mean, std)
         self.overlap = overlap
-        self.mean = mean
-        self.std = std

@@ -3,21 +3,20 @@ import paddle
 from paddle.nn import Layer
 from tqdm import tqdm
 from typing import List, Union
+from .baseinfer import BaseSlider
 from ..dataset import RasterLoader, DetWriter
 
 
-class DetSlider(object):
+class DetSlider(BaseSlider):
     def __init__(self, model: Layer) -> None:
         """ Slide infer about detection.
 
         Args:
             model (Layer): Model of PaddleDetection.
         """
-        self.model = model
-        self.model.eval()
-        self.ready()
+        super(DetSlider, self).__init__(model)
         
-    def __call__(self, path) -> None:
+    def __call__(self, path: str) -> None:
         dataloader = RasterLoader(path, self.block_size, self.overlap, self.mean, self.std)
         datawriter = DetWriter(dataloader.config)
         datawriter.draw_threshold = self.draw_threshold
@@ -51,8 +50,6 @@ class DetSlider(object):
             mean (Union[List[float], None], optional): Mean of normalize. Defaults to [0.485, 0.456, 0.406].
             std (Union[List[float], None], optional): Std of normalize. Defaults to [0.229, 0.224, 0.225].
         """
+        super(DetSlider, self).ready(block_size, mean, std)
         self.draw_threshold = draw_threshold
-        self.block_size = block_size
         self.overlap = overlap
-        self.mean = mean
-        self.std = std
