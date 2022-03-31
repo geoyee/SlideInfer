@@ -133,5 +133,3 @@ assets
 *.json
 *.pdparams
 *.yml
-
-demo.py

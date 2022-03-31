@@ -1,2 +1,2 @@
 from .rasterloader import RasterLoader
-from .writer import SegWriter, DetWriter
+from .writer import SegWriter, DetWriter, ClsWriter

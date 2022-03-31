@@ -5,7 +5,12 @@
 |          语义分割          |          目标检测          |
 | :------------------------: | :------------------------: |
 | ![seg](docs/image/seg.jpg) | ![det](docs/image/det.jpg) |
-|   4983*3745  EPSG:32737    |    3735*2546  EPSG:4326    |
+|   4983×3745  EPSG:32737    |    3735×2546  EPSG:4326    |
+
+|                     场景分类                     |         影像超分         |
+| :----------------------------------------------: | :----------------------: |
+|            ![cls](docs/image/cls.png)            | ![sr](docs/image/sr.png) |
+| 16384×16384 Popular Visualisation CRS / Mercator |          ?×? ?           |
 
 *\*注：目前仅支持Uint8的三通道影像（来自各类地图下载器的影像），目标检测图像坐标系统最好为EPSG:4326。*
 
@@ -69,9 +74,35 @@ slide_model(tif_path)
 
 
 
+## PaddleClas
+
+可以通过pip安装paddleclas，以GhostNet_x1_3为例，训练完成后可以按如下方式进行推理。结果将保存到与`tif_path`相同的路径，以`_output.tif`结束。保存结果可以在各类GIS软件中进行查看。
+
+```python
+import paddle
+from paddleclas.ppcls.arch.backbone.model_zoo.ghostnet import GhostNet_x1_3
+from sinfer import ClsSlider
+
+model = GhostNet_x1_3(class_num=9)
+model.set_state_dict(paddle.load(params_path))
+
+# 转换为滑框推理模型
+slide_model = ClsSlider(model)
+# # 可选，设置一些参数
+# slide_model.ready(
+#    block_size=128,
+#    mean=[0, 0, 0], 
+#    std=[1, 1, 1]
+# )
+# 滑框推理
+slide_model(tif_path)
+```
+
+
+
 ## TODO
 
 - [x] 语义分割（保存格式：geotiff）
 - [x] 矩形框识别（保存格式：geojson）
-- [ ] 场景分类（保存格式：geotiff）
+- [x] 场景分类（保存格式：geotiff）
 - [ ] 图像超分（保存格式：geotiff）

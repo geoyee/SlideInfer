@@ -1,1 +1,1 @@
-from .task import SegSlider, DetSlider
+from .task import SegSlider, DetSlider, ClsSlider

@@ -8,7 +8,7 @@ class BaseSlider(object):
         self.model.eval()
         self.ready()
         
-    def __call__(self, path: str) -> None:
+    def __call__(self) -> None:
         raise NotImplementedError()
 
     def ready(self, 
