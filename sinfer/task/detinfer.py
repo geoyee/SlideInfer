@@ -29,7 +29,8 @@ class DetSlider(BaseSlider):
                 "im_shape": paddle.to_tensor(img.shape[2:], dtype="float32").reshape([1, 2]),
                 "scale_factor": paddle.to_tensor([1., 1.], dtype="float32")
                 }
-            pred = self.model(inputs)
+            with paddle.no_grad():
+                pred = self.model(inputs)
             if len(pred["bbox_num"].numpy().tolist()) != 0:
                 datawriter.write(pred["bbox"].numpy(), start)
         datawriter.close()

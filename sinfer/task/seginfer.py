@@ -23,7 +23,8 @@ class SegSlider(BaseSlider):
             img = data["block"]
             start = data["start"]
             img = paddle.to_tensor(img.transpose(2, 0, 1)[None])
-            pred = self.model(img)[0]
+            with paddle.no_grad():
+                pred = self.model(img)[0]
             block = paddle.argmax(pred, axis=1).squeeze().numpy().astype("uint8")
             datawriter.write(block, start)
         datawriter.close()

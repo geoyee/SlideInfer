@@ -2,7 +2,8 @@ import paddle
 from paddleseg.models.segformer import SegFormer_B2
 from ppdet.core.workspace import load_config, create
 from paddleclas.ppcls.arch.backbone.model_zoo.ghostnet import GhostNet_x1_3
-from sinfer import SegSlider, DetSlider, ClsSlider
+from ppgan.models.generators import DRNGenerator
+from sinfer import SegSlider, DetSlider, ClsSlider, GanSlider
 
 
 if __name__ == "__main__":
@@ -30,4 +31,12 @@ if __name__ == "__main__":
     model = GhostNet_x1_3(class_num=9)
     model.set_state_dict(paddle.load(params_path))
     slide_model = ClsSlider(model)
+    slide_model(tif_path)
+
+    # Gan
+    tif_path = "assets/image/test4.tif"
+    params_path = "assets/model/drn_x4_rs_sr.pdparams"
+    model = DRNGenerator(scale=(2, 4))
+    model.set_state_dict(paddle.load(params_path)["generator"])
+    slide_model = GanSlider(model)
     slide_model(tif_path)

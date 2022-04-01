@@ -12,6 +12,7 @@ class RasterLoader(object):
                  path: str,
                  block_size: Union[List[int], int]=512,
                  overlap: Union[List[int], int]=32,
+                 sub_255: bool=True,
                  mean: Union[List[float], None]=[0.5, 0.5, 0.5], 
                  std: Union[List[float], None]=[0.5, 0.5, 0.5]) -> None:
         """ Dataloadr about geo-raster.
@@ -20,6 +21,7 @@ class RasterLoader(object):
             path (str): Path of big-geo-image.
             block_size (Union[List[int], int], optional): Size of image's block. Defaults to 512.
             overlap (Union[List[int], int], optional): Overlap between two images. Defaults to 32.
+            sub_255 (bool, optional): Divide by 255 or not. Defaults to True.
             mean (Union[List[float], None], optional): Mean of normalize. Defaults to [0.5, 0.5, 0.5].
             std (Union[List[float], None], optional): Std of normalize. Defaults to [0.5, 0.5, 0.5].
 
@@ -50,6 +52,7 @@ class RasterLoader(object):
                     len(self.mean), len(self.mean)))
         self.__getInfos()
         self.__getStart()
+        self.sub_255 = sub_255
 
     def __getitem__(self, index) -> np.ndarray:
         start_loc = self._start_list[index]
@@ -88,7 +91,9 @@ class RasterLoader(object):
 
     def __preProcessing(self, im: np.ndarray) -> np.ndarray:
         im = im.transpose((1, 2, 0))
-        im = im.astype("float32", copy=False) / 255.
+        im = im.astype("float32", copy=False)
+        if self.sub_255:
+            im /= 255.
         im -= self.mean
         im /= self.std
         return im
