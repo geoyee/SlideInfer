@@ -18,7 +18,7 @@
 
 ## 数据下载
 
-请访问[这里]()下载`assets`，其中包含`config`、`image`以及`model`。
+请访问[这里](https://next.a-boat.cn:2021/s/WdqDwLAGYLdKmWg)下载`assets`，其中包含`config`、`image`以及`model`。
 
 
 
